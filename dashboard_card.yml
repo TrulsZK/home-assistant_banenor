@@ -1,0 +1,21 @@
+type: entities
+entities:
+  - entity: sensor.banenor_oslos_line
+    name: Line
+  - entity: sensor.banenor_oslos_trainid
+    name: Train ID
+  - entity: sensor.banenor_oslos_destination
+    name: Destination
+  - entity: sensor.banenor_oslos_scheduled_departure
+    name: Scheduled Departure
+  - entity: sensor.banenor_oslos_departure
+    name: Expected Departure
+  - entity: sensor.banenor_oslos_delays
+    name: Minutes Delayed
+  - entity: sensor.banenor_oslos_platform
+    name: Platform
+  - entity: sensor.banenor_oslos_status
+    name: Status
+  - entity: sensor.banenor_oslos_delays_unknown
+    name: Unknown Delays
+title: Oslo S

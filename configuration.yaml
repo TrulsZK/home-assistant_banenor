@@ -1,0 +1,109 @@
+rest:
+  - resource: https://siri.banenor.no/jbv/sm/stop-monitoring.xml?ServiceFeatureRef=passengerTrain&MonitoringRef=KRS
+    scan_interval: 60
+    headers:
+      Content-Type: undefined
+    sensor:
+      - name: banenor_oslos_line
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ MonitoredStopVisit.MonitoredVehicleJourney.PublishedLineName }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_trainid
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ MonitoredStopVisit.MonitoredVehicleJourney.VehicleRef }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_destination
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ MonitoredStopVisit.MonitoredVehicleJourney.DestinationName }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_scheduled_departure_raw
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ MonitoredStopVisit.MonitoredVehicleJourney.MonitoredCall.AimedDepartureTime }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_departure_raw
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ MonitoredStopVisit.MonitoredVehicleJourney.MonitoredCall.ExpectedDepartureTime }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_scheduled_departure
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ as_timestamp(MonitoredStopVisit.MonitoredVehicleJourney.MonitoredCall.AimedDepartureTime) | timestamp_custom('%H:%M:%S') }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_departure
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ as_timestamp(MonitoredStopVisit.MonitoredVehicleJourney.MonitoredCall.ExpectedDepartureTime) | timestamp_custom('%H:%M:%S') }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_delays
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {% set expected_departure = as_timestamp(MonitoredStopVisit.MonitoredVehicleJourney.MonitoredCall.ExpectedDepartureTime) %}
+              {% set scheduled_departure = as_timestamp(MonitoredStopVisit.MonitoredVehicleJourney.MonitoredCall.AimedDepartureTime) %}
+              {% set delay_sec = expected_departure - scheduled_departure %}
+              {% set delay_min = (delay_sec // 60) | int %}
+              {{ delay_min }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_platform
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ MonitoredStopVisit.MonitoredVehicleJourney.MonitoredCall.DeparturePlatformName }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_status
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ MonitoredStopVisit.MonitoredVehicleJourney.MonitoredCall.DepartureStatus }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+      - name: banenor_oslos_delays_unknown
+        icon: "mdi:train"
+        value_template: >
+          {% for MonitoredStopVisit in value_json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit %}
+            {% if MonitoredStopVisit.MonitoredVehicleJourney.DirectionRef in ['KRS', 'STV'] %}
+              {{ MonitoredStopVisit.MonitoredVehicleJourney.PredictionInaccurate | default('false') }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
